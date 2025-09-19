@@ -460,6 +460,10 @@ def chat_with_ai():
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)})
 
+@app.route('/favicon.ico')
+def favicon():
+    return '', 204
+
 @app.route('/emergency-contacts')
 def emergency_contacts():
     contacts = {
