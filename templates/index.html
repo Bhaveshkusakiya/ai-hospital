@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Imaging AI - Computer Vision</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; color: white; margin-bottom: 40px; }
+        .header h1 { font-size: 3em; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .header p { font-size: 1.2em; opacity: 0.9; }
+        .card { background: white; border-radius: 15px; padding: 30px; margin: 20px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .btn { background: linear-gradient(45deg, #667eea, #764ba2); color: white; border: none; padding: 15px 30px; border-radius: 25px; cursor: pointer; font-size: 16px; transition: all 0.3s; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .upload-area { border: 3px dashed #667eea; border-radius: 10px; padding: 40px; text-align: center; margin: 20px 0; transition: all 0.3s; }
+        .upload-area:hover { border-color: #764ba2; background: #f8f9ff; }
+        .upload-area.dragover { border-color: #764ba2; background: #f0f4ff; }
+        .result { margin-top: 20px; padding: 20px; border-radius: 10px; }
+        .result.success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .result.error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .progress { width: 100%; height: 20px; background: #f0f0f0; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+        .progress-bar { height: 100%; background: linear-gradient(45deg, #667eea, #764ba2); transition: width 0.3s; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+        .status { padding: 10px; border-radius: 5px; margin: 10px 0; }
+        .status.training { background: #fff3cd; color: #856404; }
+        .status.ready { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Medical Imaging AI</h1>
+            <p>Advanced Computer Vision for Medical Image Analysis</p>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <h2>🧠 Train Model</h2>
+                <p>Train the AI model with medical imaging data for accurate diagnosis.</p>
+                <div id="trainStatus" class="status" style="display: none;"></div>
+                <button id="trainBtn" class="btn" onclick="trainModel()">Start Training</button>
+                <div id="trainProgress" class="progress" style="display: none;">
+                    <div id="trainProgressBar" class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div id="trainResult" class="result" style="display: none;"></div>
+            </div>
+
+            <div class="card">
+                <h2>🔍 Test & Predict</h2>
+                <p>Upload medical images to get AI-powered diagnostic predictions.</p>
+                <div class="upload-area" id="uploadArea">
+                    <p>📁 Drag & drop medical images here or click to browse</p>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                    <button class="btn" onclick="document.getElementById('fileInput').click()">Choose File</button>
+                </div>
+                <div id="predictResult" class="result" style="display: none;"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📊 Model Performance</h2>
+            <div id="performance" style="display: none;">
+                <p><strong>Training Accuracy:</strong> <span id="trainAcc">-</span></p>
+                <p><strong>Validation Accuracy:</strong> <span id="valAcc">-</span></p>
+                <p><strong>Model Status:</strong> <span id="modelStatus">Not Trained</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let modelTrained = false;
+
+        function trainModel() {
+            const btn = document.getElementById('trainBtn');
+            const status = document.getElementById('trainStatus');
+            const progress = document.getElementById('trainProgress');
+            const progressBar = document.getElementById('trainProgressBar');
+            const result = document.getElementById('trainResult');
+
+            btn.disabled = true;
+            btn.textContent = 'Training...';
+            status.style.display = 'block';
+            status.className = 'status training';
+            status.textContent = 'Training model with medical imaging data...';
+            progress.style.display = 'block';
+
+            // Simulate training progress
+            let width = 0;
+            const interval = setInterval(() => {
+                width += 20;
+                progressBar.style.width = width + '%';
+                if (width >= 100) clearInterval(interval);
+            }, 500);
+
+            fetch('/train', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    btn.disabled = false;
+                    btn.textContent = 'Start Training';
+                    progress.style.display = 'none';
+                    
+                    if (data.success) {
+                        modelTrained = true;
+                        result.style.display = 'block';
+                        result.className = 'result success';
+                        result.innerHTML = `
+                            <h3>✅ Training Completed!</h3>
+                            <p>Training Accuracy: ${(data.accuracy * 100).toFixed(2)}%</p>
+                            <p>Validation Accuracy: ${(data.val_accuracy * 100).toFixed(2)}%</p>
+                        `;
+                        
+                        document.getElementById('trainAcc').textContent = (data.accuracy * 100).toFixed(2) + '%';
+                        document.getElementById('valAcc').textContent = (data.val_accuracy * 100).toFixed(2) + '%';
+                        document.getElementById('modelStatus').textContent = 'Ready for Predictions';
+                        document.getElementById('performance').style.display = 'block';
+                        
+                        status.className = 'status ready';
+                        status.textContent = 'Model trained successfully! Ready for predictions.';
+                    } else {
+                        result.style.display = 'block';
+                        result.className = 'result error';
+                        result.innerHTML = `<h3>❌ Training Failed</h3><p>${data.message}</p>`;
+                    }
+                })
+                .catch(error => {
+                    btn.disabled = false;
+                    btn.textContent = 'Start Training';
+                    result.style.display = 'block';
+                    result.className = 'result error';
+                    result.innerHTML = `<h3>❌ Error</h3><p>${error.message}</p>`;
+                });
+        }
+
+        function predictImage(file) {
+            if (!modelTrained) {
+                alert('Please train the model first!');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            const result = document.getElementById('predictResult');
+
+            result.style.display = 'block';
+            result.className = 'result';
+            result.innerHTML = '<p>🔄 Analyzing image...</p>';
+
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const confidence = (data.confidence * 100).toFixed(2);
+                    const normalProb = (data.probabilities.normal * 100).toFixed(2);
+                    const abnormalProb = (data.probabilities.abnormal * 100).toFixed(2);
+                    
+                    result.className = 'result success';
+                    result.innerHTML = `
+                        <h3>🎯 Prediction Results</h3>
+                        <p><strong>Diagnosis:</strong> ${data.result}</p>
+                        <p><strong>Confidence:</strong> ${confidence}%</p>
+                        <hr style="margin: 10px 0;">
+                        <p><strong>Detailed Probabilities:</strong></p>
+                        <p>Normal: ${normalProb}%</p>
+                        <p>Abnormal: ${abnormalProb}%</p>
+                    `;
+                } else {
+                    result.className = 'result error';
+                    result.innerHTML = `<h3>❌ Prediction Failed</h3><p>${data.message}</p>`;
+                }
+            })
+            .catch(error => {
+                result.className = 'result error';
+                result.innerHTML = `<h3>❌ Error</h3><p>${error.message}</p>`;
+            });
+        }
+
+        // File upload handling
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                predictImage(e.target.files[0]);
+            }
+        });
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                predictImage(e.dataTransfer.files[0]);
+            }
+        });
+    </script>
+</body>
+</html>

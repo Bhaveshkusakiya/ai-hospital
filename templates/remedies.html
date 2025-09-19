@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Remedies - MediCore AI</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .search-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .search-input {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            backdrop-filter: blur(10px);
+        }
+        
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .search-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .quick-search {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .quick-tag {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+        
+        .quick-tag:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .remedies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .remedy-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .remedy-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .remedy-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .remedy-icon {
+            font-size: 3rem;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .remedy-info h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .remedy-info p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+        
+        .symptoms {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+        }
+        
+        .symptoms h4 {
+            color: white;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .symptoms p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+        }
+        
+        .remedies-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .remedies-list li {
+            padding: 0.5rem 0;
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .remedies-list li:before {
+            content: \"🌿\";
+            font-size: 1.2rem;
+        }
+        
+        .hindi-text {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.9);
+            text-align: center;
+            border-left: 3px solid #f39c12;
+        }
+        
+        .no-results {
+            text-align: center;
+            color: white;
+            padding: 3rem;
+            font-size: 1.2rem;
+        }
+        
+        .disclaimer {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-top: 3rem;
+            text-align: center;
+            color: white;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .remedies-grid { grid-template-columns: 1fr; }
+            .search-box { flex-direction: column; }
+            .nav-links { display: none; }
+            .container { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="/" class="logo">
+                <i class="fas fa-hospital"></i>
+                MediCore AI
+            </a>
+            <div class="nav-links">
+                <a href="/" class="nav-link">Home</a>
+                <a href="/ai-chat" class="nav-link">AI Doctor</a>
+                <a href="/remedies" class="nav-link">Home Remedies</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>🌿 Ghar ke Nuskhe (Home Remedies)</h1>
+            <p>Natural healing solutions with Hinglish guidance for common health problems</p>
+        </div>
+
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search for remedies... (e.g., fever, headache, pet dard)">
+                <button onclick="searchRemedies()" class="search-btn">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+            <div class="quick-search">
+                <div class="quick-tag" onclick="quickSearch('fever')">Bukhar</div>
+                <div class="quick-tag" onclick="quickSearch('cold')">Sardi</div>
+                <div class="quick-tag" onclick="quickSearch('headache')">Sir Dard</div>
+                <div class="quick-tag" onclick="quickSearch('stomach')">Pet Dard</div>
+                <div class="quick-tag" onclick="quickSearch('cough')">Khansi</div>
+                <div class="quick-tag" onclick="quickSearch('gas')">Gas</div>
+                <div class="quick-tag" onclick="quickSearch('acidity')">Acidity</div>
+                <div class="quick-tag" onclick="quickSearch('joint')">Jodo ka Dard</div>
+            </div>
+        </div>
+
+        <div id="remediesContainer" class="remedies-grid">
+            <!-- Remedies will be loaded here -->
+        </div>
+
+        <div class="disclaimer">
+            <p><strong>⚠️ Disclaimer:</strong> Ye ghar ke nuskhe general guidance ke liye hai. Serious health problems ke liye doctor se zaroor consult kare. Emergency mein 108 call kare.</p>
+        </div>
+    </div>
+
+    <script>
+        let allRemedies = {};
+
+        // Load all remedies on page load
+        async function loadRemedies() {
+            try {
+                const response = await fetch('/search-remedy');
+                allRemedies = await response.json();
+                displayRemedies(allRemedies);
+            } catch (error) {
+                console.error('Error loading remedies:', error);
+            }
+        }
+
+        function displayRemedies(remedies) {
+            const container = document.getElementById('remediesContainer');
+            
+            if (Object.keys(remedies).length === 0) {
+                container.innerHTML = '<div class="no-results">No remedies found. Try different keywords.</div>';
+                return;
+            }
+
+            container.innerHTML = Object.entries(remedies).map(([key, remedy]) => `
+                <div class="remedy-card">
+                    <div class="remedy-header">
+                        <div class="remedy-icon">🌿</div>
+                        <div class="remedy-info">
+                            <h3>${remedy.name}</h3>
+                            <p>Common home remedy</p>
+                        </div>
+                    </div>
+                    
+                    <div class="symptoms">
+                        <h4>Symptoms:</h4>
+                        <p>${remedy.symptoms}</p>
+                    </div>
+                    
+                    <h4 style="color: white; margin-bottom: 1rem;">Remedies:</h4>
+                    <ul class="remedies-list">
+                        ${remedy.remedies.map(r => `<li>${r}</li>`).join('')}
+                    </ul>
+                    
+                    <div class="hindi-text">
+                        ${remedy.hindi}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function searchRemedies() {
+            const query = document.getElementById('searchInput').value.trim();
+            
+            if (query) {
+                try {
+                    const response = await fetch(`/search-remedy?q=${encodeURIComponent(query)}`);
+                    const results = await response.json();
+                    displayRemedies(results);
+                } catch (error) {
+                    console.error('Error searching remedies:', error);
+                }
+            } else {
+                displayRemedies(allRemedies);
+            }
+        }
+
+        function quickSearch(term) {
+            document.getElementById('searchInput').value = term;
+            searchRemedies();
+        }
+
+        // Search on Enter key
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchRemedies();
+            }
+        });
+
+        // Load remedies when page loads
+        window.addEventListener('load', loadRemedies);
+    </script>
+</body>
+</html>

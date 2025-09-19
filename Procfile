@@ -1,0 +1,1 @@
+web: python hospital_ai.py
