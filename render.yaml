@@ -1,9 +1,9 @@
 services:
   - type: web
-    name: medicore-ai-hospital
+    name: ai-hospital
     env: python
     buildCommand: pip install -r requirements.txt
     startCommand: python hospital_ai.py
     envVars:
       - key: PYTHON_VERSION
-        value: 3.9.16
+        value: 3.10.12
